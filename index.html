@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RuangKarya — Galeri Karya Seni & Fotografi Lokal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            800: '#292524',
+                            900: '#1c1917',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-stone-50 text-stone-900 font-sans antialiased selection:bg-amber-200 selection:text-stone-900">
+
+    <!-- Toast Notification Container (Pengganti alert) -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- Navbar -->
+    <header class="sticky top-0 z-40 bg-stone-50/85 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center gap-2.5 group">
+                <div class="w-9 h-9 rounded-xl bg-stone-900 text-stone-50 flex items-center justify-center shadow-sm group-hover:bg-amber-600 transition-colors">
+                    <i data-lucide="palette" class="w-5 h-5"></i>
+                </div>
+                <span class="font-serif text-xl font-bold tracking-tight text-stone-900">Ruang<span class="text-amber-600">Karya</span></span>
+            </a>
+
+            <!-- Navigation Links (Desktop) -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-stone-600">
+                <a href="#jelajahi" class="hover:text-stone-900 transition-colors">Jelajahi Karya</a>
+                <a href="#tentang" class="hover:text-stone-900 transition-colors">Tentang Pameran</a>
+            </nav>
+
+            <!-- CTA Button -->
+            <div class="flex items-center gap-3">
+                <button onclick="openUploadModal()" class="inline-flex items-center gap-2 bg-stone-900 hover:bg-amber-600 text-white text-sm font-medium px-4 py-2.5 rounded-full shadow-sm transition-all active:scale-95">
+                    <i data-lucide="plus" class="w-4 h-4"></i>
+                    <span>Pajang Karya</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden pt-12 pb-16 sm:pt-20 sm:pb-24 border-b border-stone-200 bg-gradient-to-b from-amber-50/50 to-stone-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 mb-6">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                Ruang Pamer Digital Gratis untuk Kreator Muda
+            </span>
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-bold text-stone-900 tracking-tight max-w-3xl mx-auto leading-tight">
+                Setiap Sudut Kota Punya Cerita. <span class="italic text-amber-700 font-normal">Wujudkan di Sini.</span>
+            </h1>
+            <p class="mt-5 text-base sm:text-lg text-stone-600 max-w-2xl mx-auto leading-relaxed">
+                Platform terbuka bagi ilustrator, fotografer jalanan, dan penulis puisi muda lokal untuk memamerkan karya terbaik dan saling memberi apresiasi tanpa batas.
+            </p>
+            <div class="mt-8 flex flex-wrap items-center justify-center gap-4">
+                <a href="#jelajahi" class="px-6 py-3 rounded-full bg-stone-900 text-white font-medium text-sm hover:bg-stone-800 transition-all shadow-sm">
+                    Mulai Menjelajah
+                </a>
+                <button onclick="openUploadModal()" class="px-6 py-3 rounded-full bg-white text-stone-900 border border-stone-300 font-medium text-sm hover:bg-stone-100 transition-all">
+                    Kirim Karyamu Sekarang
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-14 grid grid-cols-3 gap-4 max-w-lg mx-auto pt-8 border-t border-stone-200/80">
+                <div>
+                    <div id="stat-works" class="text-2xl font-bold text-stone-900">6</div>
+                    <div class="text-xs text-stone-500 mt-0.5">Karya Dipamerkan</div>
+                </div>
+                <div>
+                    <div id="stat-creators" class="text-2xl font-bold text-stone-900">6</div>
+                    <div class="text-xs text-stone-500 mt-0.5">Kreator Muda</div>
+                </div>
+                <div>
+                    <div id="stat-appreciations" class="text-2xl font-bold text-amber-600">428</div>
+                    <div class="text-xs text-stone-500 mt-0.5">Total Apresiasi</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Gallery Section -->
+    <main id="jelajahi" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
+        
+        <!-- Filter & Search Bar -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <!-- Category Pills -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 no-scrollbar" id="category-filters">
+                <button data-category="all" class="filter-btn active px-4 py-2 rounded-full text-sm font-medium bg-stone-900 text-white transition-all whitespace-nowrap">
+                    Semua Karya
+                </button>
+                <button data-category="Ilustrasi" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-100 transition-all whitespace-nowrap">
+                    🎨 Ilustrasi
+                </button>
+                <button data-category="Fotografi" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-100 transition-all whitespace-nowrap">
+                    📷 Fotografi
+                </button>
+                <button data-category="Puisi" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-stone-600 border border-stone-200 hover:bg-stone-100 transition-all whitespace-nowrap">
+                    ✒️ Puisi & Sastra
+                </button>
+            </div>
+
+            <!-- Search Input -->
+            <div class="relative w-full md:w-72">
+                <i data-lucide="search" class="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" id="search-input" placeholder="Cari judul atau kreator..." 
+                    class="w-full pl-10 pr-4 py-2 bg-white border border-stone-200 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500 transition-all">
+            </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+            <!-- Cards will be injected dynamically via JavaScript -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4 text-stone-400">
+                <i data-lucide="search-x" class="w-8 h-8"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-stone-900">Karya tidak ditemukan</h3>
+            <p class="text-sm text-stone-500 mt-1">Coba kata kunci lain atau pilih kategori yang berbeda.</p>
+        </div>
+    </main>
+
+    <!-- About Section -->
+    <section id="tentang" class="bg-stone-900 text-stone-300 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                <div>
+                    <h2 class="font-serif text-3xl font-bold text-white">Mengapa RuangKarya Hadir?</h2>
+                    <p class="mt-4 text-stone-400 leading-relaxed text-sm sm:text-base">
+                        Banyak karya luar biasa dari anak muda daerah yang hanya tersimpan di galeri ponsel atau buku catatan. RuangKarya hadir sebagai ruang inkubasi dan pameran inklusif—tanpa biaya kurasi, tanpa algoritma yang rumit—murni untuk merayakan kreativitas lokal.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="p-5 rounded-2xl bg-stone-800/70 border border-stone-700/60">
+                        <i data-lucide="heart-handshake" class="w-6 h-6 text-amber-400 mb-3"></i>
+                        <h3 class="text-white font-semibold text-sm">Apresiasi Positif</h3>
+                        <p class="text-xs text-stone-400 mt-1.5 leading-relaxed">Berikan tepuk tangan virtual dan tinggalkan catatan hangat untuk menyemangati kreator.</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-stone-800/70 border border-stone-700/60">
+                        <i data-lucide="map-pin" class="w-6 h-6 text-amber-400 mb-3"></i>
+                        <h3 class="text-white font-semibold text-sm">Identitas Lokal</h3>
+                        <p class="text-xs text-stone-400 mt-1.5 leading-relaxed">Menampilkan asal kota kreator untuk membangun jejaring komunitas seni daerah.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 pt-8 border-t border-stone-800 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 gap-4">
+                <p>&copy; 2026 RuangKarya Lokal. Dibuat untuk mendukung kreator muda Indonesia.</p>
+                <p>Semua hak cipta karya tetap dimiliki oleh masing-masing kreator.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL 1: Detail Karya & Komentar Apresiasi -->
+    <div id="detail-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-stone-950/70 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-4xl w-full max-h-[90vh] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-fade-in">
+            <!-- Left: Visual / Puisi Preview -->
+            <div id="modal-media-container" class="md:w-3/5 bg-stone-100 flex items-center justify-center relative overflow-y-auto max-h-[45vh] md:max-h-[90vh]">
+                <!-- Content injected dynamically -->
+            </div>
+
+            <!-- Right: Details & Appreciation -->
+            <div class="md:w-2/5 p-6 flex flex-col justify-between overflow-y-auto max-h-[45vh] md:max-h-[90vh]">
+                <div>
+                    <div class="flex items-start justify-between gap-2">
+                        <span id="modal-category" class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Kategori</span>
+                        <button onclick="closeDetailModal()" class="p-2 rounded-full hover:bg-stone-100 text-stone-500 transition-colors">
+                            <i data-lucide="x" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+
+                    <h2 id="modal-title" class="font-serif text-2xl font-bold text-stone-900 mt-3">Judul Karya</h2>
+                    <div class="flex items-center gap-2 mt-2 text-sm text-stone-600">
+                        <span id="modal-author" class="font-medium text-stone-900">Nama Kreator</span>
+                        <span>•</span>
+                        <span id="modal-city" class="text-stone-500 flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i> Kota</span>
+                    </div>
+
+                    <p id="modal-description" class="mt-4 text-sm text-stone-600 leading-relaxed">
+                        Deskripsi karya...
+                    </p>
+
+                    <!-- Appreciation Button -->
+                    <div class="mt-6 pt-5 border-t border-stone-100 flex items-center justify-between">
+                        <button id="modal-like-btn" onclick="toggleLikeCurrent()" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 font-medium text-sm transition-all active:scale-95">
+                            <i data-lucide="heart" class="w-4 h-4 fill-current"></i>
+                            <span id="modal-likes-count">0</span> Apresiasi
+                        </button>
+                        <button onclick="shareWork()" class="inline-flex items-center gap-1.5 text-xs font-medium text-stone-500 hover:text-stone-900 px-3 py-2 rounded-full hover:bg-stone-100 transition-colors">
+                            <i data-lucide="share-2" class="w-4 h-4"></i> Bagikan
+                        </button>
+                    </div>
+
+                    <!-- Comments Section -->
+                    <div class="mt-6">
+                        <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-400 mb-3">Catatan Pengunjung (<span id="modal-comment-count">0</span>)</h4>
+                        <div id="modal-comments-list" class="space-y-3 max-h-40 overflow-y-auto pr-1">
+                            <!-- Comments injected dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Comment Form -->
+                <form onsubmit="submitComment(event)" class="mt-4 pt-3 border-t border-stone-100 flex gap-2">
+                    <input type="text" id="comment-input" required placeholder="Tulis pesan apresiasi..." 
+                        class="flex-1 px-3.5 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm focus:outline-none focus:border-amber-500">
+                    <button type="submit" class="p-2.5 rounded-full bg-stone-900 text-white hover:bg-amber-600 transition-colors" title="Kirim">
+                        <i data-lucide="send" class="w-4 h-4"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Unggah Karya Baru -->
+    <div id="upload-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-stone-950/70 backdrop-blur-sm">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="font-serif text-2xl font-bold text-stone-900">Pajang Karyamu</h2>
+                    <p class="text-xs text-stone-500 mt-0.5">Gratis dan langsung tampil di ruang pamer publik.</p>
+                </div>
+                <button onclick="closeUploadModal()" class="p-2 rounded-full hover:bg-stone-100 text-stone-500">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <form onsubmit="handleUploadSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Judul Karya *</label>
+                    <input type="text" id="up-title" required placeholder="Contoh: Senja di Stasiun Bogor" 
+                        class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-amber-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Nama Kreator *</label>
+                        <input type="text" id="up-author" required placeholder="Nama / Pena" 
+                            class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-stone-700 mb-1">Asal Kota *</label>
+                        <input type="text" id="up-city" required placeholder="Contoh: Bandung" 
+                            class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-amber-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Kategori Karya *</label>
+                    <select id="up-category" onchange="toggleUploadFields()" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm bg-white focus:outline-none focus:border-amber-500">
+                        <option value="Ilustrasi">🎨 Ilustrasi</option>
+                        <option value="Fotografi">📷 Fotografi</option>
+                        <option value="Puisi">✒️ Puisi & Sastra</option>
+                    </select>
+                </div>
+
+                <!-- Dynamic Field: Image URL / Upload for Visual Art -->
+                <div id="visual-input-group">
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Pilih File Gambar atau Tempel Tautan *</label>
+                    <input type="file" id="up-file" accept="image/*" class="w-full text-xs text-stone-500 file:mr-3 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100 mb-2">
+                    <input type="url" id="up-image-url" placeholder="Atau tempel URL gambar (https://...)" 
+                        class="w-full px-4 py-2 rounded-xl border border-stone-200 text-xs focus:outline-none focus:border-amber-500">
+                </div>
+
+                <!-- Dynamic Field: Poem Text -->
+                <div id="poem-input-group" class="hidden">
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Teks Puisi Lengkap *</label>
+                    <textarea id="up-poem-text" rows="5" placeholder="Tuliskan bait-bait puisimu di sini..." 
+                        class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm font-serif focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-stone-700 mb-1">Cerita di Balik Karya *</label>
+                    <textarea id="up-desc" required rows="2" placeholder="Ceritakan singkat makna atau proses pembuatan karya ini..." 
+                        class="w-full px-4 py-2.5 rounded-xl border border-stone-200 text-sm focus:outline-none focus:border-amber-500"></textarea>
+                </div>
+
+                <div class="pt-2 flex justify-end gap-3">
+                    <button type="button" onclick="closeUploadModal()" class="px-5 py-2.5 rounded-full text-sm font-medium text-stone-600 hover:bg-stone-100">Batal</button>
+                    <button type="submit" class="px-6 py-2.5 rounded-full text-sm font-medium bg-stone-900 text-white hover:bg-amber-600 transition-colors shadow-sm">Terbitkan Karya</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data Awal Karya Seni, Fotografi & Puisi Lokal
+        let artworks = [
+            {
+                id: 1,
+                title: "Hujan Sore di Sudut Braga",
+                author: "Nadia Putri",
+                city: "Bandung",
+                category: "Fotografi",
+                image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+                description: "Diambil menggunakan kamera analog saat rintik hujan membasahi trotoar tua dan lampu jalan mulai menyala keemasan.",
+                likes: 94,
+                liked: false,
+                comments: [
+                    { user: "Raka", text: "Tone warnanya hangat banget, berasa nostalgia!" },
+                    { user: "Sinta", text: "Komposisi cahayanya juara." }
+                ]
+            },
+            {
+                id: 2,
+                title: "Penjaga Warung Kopi",
+                author: "Dimas Pratama",
+                city: "Yogyakarta",
+                category: "Ilustrasi",
+                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=800&q=80",
+                description: "Ilustrasi digital yang terinspirasi dari obrolan hangat tengah malam di angkringan pinggir rel kereta.",
+                likes: 112,
+                liked: false,
+                comments: [
+                    { user: "Bagas", text: "Detail ekspresinya hidup sekali!" }
+                ]
+            },
+            {
+                id: 3,
+                title: "Catatan Kereta Terakhir",
+                author: "Alya Rahma",
+                city: "Bogor",
+                category: "Puisi",
+                poemText: "Di peron tiga, waktu berjalan lebih pelan,\nMenghitung langkah-langkah yang pulang ke pelukan.\nLampumu redup, wahai kota hujan,\nMenyimpan rahasia di balik deru roda besi yang perlahan menghilang.\n\nKita hanyalah penumpang singgah,\nYang menitipkan rindu pada bangku-bangku basah.",
+                description: "Puisi yang ditulis di atas catatan ponsel saat menunggu KRL terakhir menuju Bogor.",
+                likes: 68,
+                liked: false,
+                comments: [
+                    { user: "Fajar", text: "Bait terakhirnya ngena banget buat anak kereta." }
+                ]
+            },
+            {
+                id: 4,
+                title: "Harmoni Pasar Pagi",
+                author: "Bima Sakti",
+                city: "Surakarta",
+                category: "Fotografi",
+                image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=800&q=80",
+                description: "Siluet sinar matahari pagi yang menembus celah atap pasar tradisional pukul 06.00 WIB.",
+                likes: 81,
+                liked: false,
+                comments: []
+            },
+            {
+                id: 5,
+                title: "Mimpi di Atas Awan",
+                author: "Clara Wijaya",
+                city: "Malang",
+                category: "Ilustrasi",
+                image: "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=800&q=80",
+                description: "Eksplorasi cat air dan gouache tentang ketenangan alam pegunungan saat kabut turun.",
+                likes: 73,
+                liked: false,
+                comments: [
+                    { user: "Dina", text: "Perpaduan warna birunya menenangkan mata." }
+                ]
+            }
+        ];
+
+        let currentCategory = 'all';
+        let searchQuery = '';
+        let activeArtworkId = null;
+
+        // Inisialisasi Icon Lucide & Render Awal
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderGallery();
+            updateStats();
+        });
+
+        // Fungsi Render Kartu Galeri
+        function renderGallery() {
+            const grid = document.getElementById('gallery-grid');
+            const emptyState = document.getElementById('empty-state');
+            
+            const filtered = artworks.filter(item => {
+                const matchCategory = currentCategory === 'all' || item.category === currentCategory;
+                const matchSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                    item.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                    item.city.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchCategory && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = filtered.map(art => {
+                const isPoem = art.category === 'Puisi';
+                return `
+                <article onclick="openDetailModal(${art.id})" class="group bg-white rounded-3xl border border-stone-200/80 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <!-- Media Preview -->
+                        <div class="relative aspect-[4/3] overflow-hidden bg-stone-100">
+                            ${isPoem ? `
+                                <div class="w-full h-full p-6 bg-gradient-to-br from-amber-50 via-stone-100 to-amber-100/60 flex flex-col justify-center">
+                                    <i data-lucide="quote" class="w-6 h-6 text-amber-600/40 mb-2"></i>
+                                    <p class="font-serif italic text-stone-700 text-sm line-clamp-4 leading-relaxed whitespace-pre-line">${art.poemText}</p>
+                                </div>
+                            ` : `
+                                <img src="${art.image}" alt="${art.title}" 
+                                    onerror="this.src='https://placehold.co/800x600/e7e5e4/57534e?text=Karya+Seni'"
+                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            `}
+                            <span class="absolute top-3.5 left-3.5 px-3 py-1 rounded-full text-xs font-medium bg-white/90 backdrop-blur-sm text-stone-800 shadow-sm">
+                                ${art.category}
+                            </span>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="p-5">
+                            <h3 class="font-serif text-lg font-bold text-stone-900 group-hover:text-amber-700 transition-colors line-clamp-1">${art.title}</h3>
+                            <p class="text-xs text-stone-500 mt-1 flex items-center gap-1.5">
+                                <span class="font-medium text-stone-700">${art.author}</span>
+                                <span>•</span>
+                                <span>${art.city}</span>
+                            </p>
+                            <p class="text-xs text-stone-600 mt-3 line-clamp-2 leading-relaxed">${art.description}</p>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="px-5 py-3.5 border-t border-stone-100 flex items-center justify-between bg-stone-50/50">
+                        <button onclick="event.stopPropagation(); toggleLikeCard(${art.id})" class="inline-flex items-center gap-1.5 text-xs font-medium ${art.liked ? 'text-rose-600' : 'text-stone-500 hover:text-rose-600'} transition-colors">
+                            <i data-lucide="heart" class="w-4 h-4 ${art.liked ? 'fill-current' : ''}"></i>
+                            <span>${art.likes}</span>
+                        </button>
+                        <div class="inline-flex items-center gap-1.5 text-xs text-stone-400">
+                            <i data-lucide="message-circle" class="w-4 h-4"></i>
+                            <span>${art.comments.length}</span>
+                        </div>
+                    </div>
+                </article>
+                `;
+            }).join('');
+
+            lucide.createIcons();
+        }
+
+        // Filter Kategori
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-stone-900', 'text-white');
+                    b.classList.add('bg-white', 'text-stone-600', 'border', 'border-stone-200');
+                });
+                btn.classList.remove('bg-white', 'text-stone-600', 'border', 'border-stone-200');
+                btn.classList.add('bg-stone-900', 'text-white');
+                
+                currentCategory = btn.dataset.category;
+                renderGallery();
+            });
+        });
+
+        // Pencarian Real-time
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderGallery();
+        });
+
+        // Toggle Like dari Kartu
+        function toggleLikeCard(id) {
+            const art = artworks.find(a => a.id === id);
+            if (!art) return;
+            art.liked = !art.liked;
+            art.likes += art.liked ? 1 : -1;
+            renderGallery();
+            updateStats();
+            if (art.liked) showToast(`Kamu mengapresiasi "${art.title}" ❤️`);
+        }
+
+        // Buka Modal Detail
+        function openDetailModal(id) {
+            const art = artworks.find(a => a.id === id);
+            if (!art) return;
+            activeArtworkId = id;
+
+            const mediaContainer = document.getElementById('modal-media-container');
+            if (art.category === 'Puisi') {
+                mediaContainer.innerHTML = `
+                    <div class="p-8 sm:p-12 w-full bg-amber-50/70 min-h-[300px] flex flex-col justify-center">
+                        <i data-lucide="feather" class="w-8 h-8 text-amber-600 mb-4"></i>
+                        <p class="font-serif italic text-lg sm:text-xl text-stone-800 leading-relaxed whitespace-pre-line">${art.poemText}</p>
+                    </div>
+                `;
+            } else {
+                mediaContainer.innerHTML = `
+                    <img src="${art.image}" alt="${art.title}" 
+                        onerror="this.src='https://placehold.co/800x600/e7e5e4/57534e?text=Karya+Seni'"
+                        class="w-full h-full object-contain bg-stone-950">
+                `;
+            }
+
+            document.getElementById('modal-category').textContent = art.category;
+            document.getElementById('modal-title').textContent = art.title;
+            document.getElementById('modal-author').textContent = art.author;
+            document.getElementById('modal-city').innerHTML = `<i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${art.city}`;
+            document.getElementById('modal-description').textContent = art.description;
+            
+            updateModalLikeUI(art);
+            renderModalComments(art);
+
+            const modal = document.getElementById('detail-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeDetailModal() {
+            const modal = document.getElementById('detail-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            activeArtworkId = null;
+        }
+
+        function toggleLikeCurrent() {
+            if (!activeArtworkId) return;
+            const art = artworks.find(a => a.id === activeArtworkId);
+            art.liked = !art.liked;
+            art.likes += art.liked ? 1 : -1;
+            updateModalLikeUI(art);
+            renderGallery();
+            updateStats();
+        }
+
+        function updateModalLikeUI(art) {
+            const btn = document.getElementById('modal-like-btn');
+            document.getElementById('modal-likes-count').textContent = art.likes;
+            if (art.liked) {
+                btn.classList.add('bg-rose-600', 'text-white');
+                btn.classList.remove('bg-rose-50', 'text-rose-600');
+            } else {
+                btn.classList.remove('bg-rose-600', 'text-white');
+                btn.classList.add('bg-rose-50', 'text-rose-600');
+            }
+        }
+
+        function renderModalComments(art) {
+            const list = document.getElementById('modal-comments-list');
+            document.getElementById('modal-comment-count').textContent = art.comments.length;
+
+            if (art.comments.length === 0) {
+                list.innerHTML = `<p class="text-xs text-stone-400 italic">Belum ada catatan. Jadilah yang pertama mengapresiasi!</p>`;
+                return;
+            }
+
+            list.innerHTML = art.comments.map(c => `
+                <div class="bg-stone-50 p-3 rounded-2xl text-xs">
+                    <span class="font-semibold text-stone-800">${c.user}:</span>
+                    <span class="text-stone-600 ml-1">${c.text}</span>
+                </div>
+            `).join('');
+        }
+
+        function submitComment(e) {
+            e.preventDefault();
+            const input = document.getElementById('comment-input');
+            const text = input.value.trim();
+            if (!text || !activeArtworkId) return;
+
+            const art = artworks.find(a => a.id === activeArtworkId);
+            art.comments.push({ user: "Pengunjung", text });
+            input.value = '';
+            renderModalComments(art);
+            renderGallery();
+            showToast("Catatan apresiasimu terkirim!");
+        }
+
+        function shareWork() {
+            const dummyUrl = window.location.href;
+            const tempInput = document.createElement('input');
+            tempInput.value = dummyUrl;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast("Tautan galeri disalin ke papan klip!");
+        }
+
+        // Upload Modal Logic
+        function openUploadModal() {
+            const modal = document.getElementById('upload-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function closeUploadModal() {
+            const modal = document.getElementById('upload-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }
+
+        function toggleUploadFields() {
+            const category = document.getElementById('up-category').value;
+            const visualGroup = document.getElementById('visual-input-group');
+            const poemGroup = document.getElementById('poem-input-group');
+
+            if (category === 'Puisi') {
+                visualGroup.classList.add('hidden');
+                poemGroup.classList.remove('hidden');
+            } else {
+                visualGroup.classList.remove('hidden');
+                poemGroup.classList.add('hidden');
+            }
+        }
+
+        function handleUploadSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('up-title').value.trim();
+            const author = document.getElementById('up-author').value.trim();
+            const city = document.getElementById('up-city').value.trim();
+            const category = document.getElementById('up-category').value;
+            const description = document.getElementById('up-desc').value.trim();
+
+            if (category === 'Puisi') {
+                const poemText = document.getElementById('up-poem-text').value.trim();
+                if (!poemText) {
+                    showToast("Tuliskan teks puisimu terlebih dahulu.");
+                    return;
+                }
+                addNewArtwork({ title, author, city, category, poemText, description });
+            } else {
+                const fileInput = document.getElementById('up-file');
+                const urlInput = document.getElementById('up-image-url').value.trim();
+
+                if (fileInput.files && fileInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        addNewArtwork({ title, author, city, category, image: event.target.result, description });
+                    };
+                    reader.readAsDataURL(fileInput.files[0]);
+                } else if (urlInput) {
+                    addNewArtwork({ title, author, city, category, image: urlInput, description });
+                } else {
+                    // Fallback jika user tidak memasukkan gambar
+                    addNewArtwork({ 
+                        title, author, city, category, 
+                        image: `https://placehold.co/800x600/f5f5f4/292524?text=${encodeURIComponent(title)}`, 
+                        description 
+                    });
+                }
+            }
+        }
+
+        function addNewArtwork(data) {
+            const newArt = {
+                id: Date.now(),
+                ...data,
+                likes: 1,
+                liked: true,
+                comments: []
+            };
+            artworks.unshift(newArt);
+            renderGallery();
+            updateStats();
+            closeUploadModal();
+            eFormReset();
+            showToast(`Karya "${data.title}" berhasil dipamerkan!`);
+        }
+
+        function eFormReset() {
+            document.getElementById('up-title').value = '';
+            document.getElementById('up-author').value = '';
+            document.getElementById('up-city').value = '';
+            document.getElementById('up-file').value = '';
+            document.getElementById('up-image-url').value = '';
+            document.getElementById('up-poem-text').value = '';
+            document.getElementById('up-desc').value = '';
+        }
+
+        // Update Statistik Hero
+        function updateStats() {
+            document.getElementById('stat-works').textContent = artworks.length;
+            const uniqueCreators = new Set(artworks.map(a => a.author.toLowerCase())).size;
+            document.getElementById('stat-creators').textContent = uniqueCreators;
+            const totalLikes = artworks.reduce((sum, item) => sum + item.likes, 0);
+            document.getElementById('stat-appreciations').textContent = totalLikes;
+        }
+
+        // Custom Toast Notification
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-stone-900 text-white text-xs font-medium px-4 py-3 rounded-full shadow-lg flex items-center gap-2 transition-all duration-300 translate-y-2 opacity-0';
+            toast.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> <span>${message}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+
+            requestAnimationFrame(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            });
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
